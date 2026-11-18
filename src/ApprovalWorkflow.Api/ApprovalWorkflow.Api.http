@@ -1,0 +1,40 @@
+@host = http://localhost:5201
+
+### Submit (Requester)
+POST {{host}}/api/v1/requests
+X-User: rina
+X-Role: Requester
+Content-Type: application/json
+
+{
+  "title": "Overtime November",
+  "amount": 150000
+}
+
+### Approve (Approver) - replace id and version
+POST {{host}}/api/v1/requests/00000000-0000-0000-0000-000000000000/decisions
+X-User: budi
+X-Role: Approver
+Content-Type: application/json
+
+{
+  "decision": "approve",
+  "comment": "ok",
+  "expectedVersion": 1
+}
+
+### Reject without comment -> 400 COMMENT_REQUIRED
+POST {{host}}/api/v1/requests/00000000-0000-0000-0000-000000000000/decisions
+X-User: budi
+X-Role: Approver
+Content-Type: application/json
+
+{
+  "decision": "reject",
+  "expectedVersion": 1
+}
+
+### List pending
+GET {{host}}/api/v1/requests?status=pending
+X-User: audit
+X-Role: Requester
